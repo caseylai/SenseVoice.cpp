@@ -13,6 +13,8 @@ set(SOURCE_FILES
         sense-voice-decoder.cc
         sense-voice.h
         sense-voice.cc
+        silero-vad.h
+        silero-vad.cc
 )
 
 include_directories(third-party/ggml/include)
