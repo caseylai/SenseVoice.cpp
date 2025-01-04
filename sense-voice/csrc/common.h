@@ -177,6 +177,7 @@ void sense_voice_log_callback_default(ggml_log_level level, const char * text, v
     } while (0)
 
 struct sense_voice_global {
+    ggml_log_level log_level = GGML_LOG_LEVEL_INFO;
     // We save the log callback globally
     ggml_log_callback log_callback = sense_voice_log_callback_default;
     void * log_callback_user_data = nullptr;
@@ -484,5 +485,7 @@ struct sense_voice_context {
 };
 
 struct sense_voice_full_params sense_voice_full_default_params(enum sense_voice_decoding_strategy strategy);
+
+void sense_voice_set_log_level(ggml_log_level level);
 
 #endif//SENSEVOICE_CPP_COMMON_H

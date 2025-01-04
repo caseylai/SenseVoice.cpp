@@ -137,11 +137,17 @@ bool sense_voice_decode_internal(sense_voice_context &ctx,
             int last_id = 0;
             for(int id: state.ids){
                 if (id != 0 && id != last_id) {
-                    printf("%s", ctx.vocab.id_to_token[id].c_str());
+                    std::string text = ctx.vocab.id_to_token[id];
                     last_id = id;
+                    // skip special tokens
+                    if (text[0] == '<' && text[1] == '|') {
+                        continue;
+                    }
+                    sense_voice_segment segment;
+                    segment.text = text;
+                    state.result_all.push_back(segment);
                 }
             }
-            printf("\n");
         }
 
     }

@@ -21,10 +21,12 @@
 
 void sense_voice_log_callback_default(ggml_log_level level,
                                              const char *text, void *user_data) {
-    (void)level;
-    (void)user_data;
-    fputs(text, stderr);
-    fflush(stderr);
+    if (level >= g_state.log_level) {
+        (void)level;
+        (void)user_data;
+        fputs(text, stderr);
+        fflush(stderr);
+    }
 }
 
 GGML_ATTRIBUTE_FORMAT(2, 3)
@@ -95,4 +97,24 @@ struct sense_voice_full_params sense_voice_full_default_params(enum sense_voice_
     }
 
     return result;
+}
+
+auto create_log_callback(ggml_log_level min_level) -> ggml_log_callback {
+    static ggml_log_level s_min_level;
+    s_min_level = min_level;
+    return [](ggml_log_level level, const char* text, void* user_data) {
+        if (level >= s_min_level) {
+            (void)level;
+            (void)user_data;
+            fputs(text, stderr);
+            fflush(stderr);
+        }
+    };
+}
+
+void sense_voice_set_log_level(ggml_log_level level) {
+    g_state.log_level = level;
+    if (level >= GGML_LOG_LEVEL_INFO) {
+        ggml_log_set(create_log_callback(level), NULL);
+    }
 }
